@@ -1,3 +1,25 @@
+#' @title
+#' Plot btree
+#'
+#' @description
+#' Plot a btree object using ggplot2
+#'
+#' @details
+#' Returns a ggplot plot of a btree
+#'
+#' @param btree btree to plot
+#' @param labelCol name of the column whose values should be plotted as node labels/info
+#'
+#' @export
+#' @import data.table
+#' @import ggplot2
+#'
+#' @examples
+#' library(data.table)
+#' library(ggplot2)
+#' mytree <- make_perfect_btree(2)
+#' plot_btree(mytree)
+
 plot_btree <- function(btree, labelCol="NodeID"){
   # Plot a btree
 
