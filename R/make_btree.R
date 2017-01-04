@@ -5,8 +5,8 @@
 #' Make a btree, data.table object from one of two constructors:
 #'
 #' \itemize{
-#'  \item{1}{A vector of node IDs and parent node IDs} or
-#'  \item{2}{A vector of node IDs, left-child IDs, and right-child IDs}
+#'  \item{A vector of node IDs and parent node IDs} or
+#'  \item{A vector of node IDs, left-child IDs, and right-child IDs}
 #' }
 #'
 #' @details
