@@ -25,7 +25,6 @@
 #'
 #' # constructor 1
 #' make_btree(nodeIDs=c(1), parentNodeIDs=c(NA_integer_))
-#' make_btree(nodeIDs=c(1,2), parentNodeIDs=c(NA,1))
 #' make_btree(nodeIDs=c(1,2,3), parentNodeIDs=c(NA,1,1))
 #' make_btree(nodeIDs=c(1,2,3,4,5,6,7), parentNodeIDs=c(NA,1,1,2,2,3,3))
 #'
@@ -33,7 +32,6 @@
 #' make_btree(nodeIDs=c(1), leftChildIDs=c(NA_integer_), rightChildIDs=c(NA_integer_))
 #' make_btree(nodeIDs=c(1), leftChildIDs=c(2), rightChildIDs=c(3))
 #' make_btree(nodeIDs=c(1,2,3), leftChildIDs=c(2,NA,NA), rightChildIDs=c(3,NA,NA))
-#' make_btree(nodeIDs=c(1,1), leftChildIDs=c(2,3), rightChildIDs=c(3,2))
 
 
 make_btree <- function(nodeIDs, parentNodeIDs=NULL, leftChildIDs=NULL, rightChildIDs=NULL){
@@ -64,8 +62,8 @@ make_btree <- function(nodeIDs, parentNodeIDs=NULL, leftChildIDs=NULL, rightChil
     btree <- data.table(NodeID = nodeIDs, ParentNodeID = parentNodeIDs)
 
     # Check btree properties
-    if(!has_one_root(btree)) stop("BTree property violated: exactly one root node")
-    if(!has_two_parents(btree)) stop("BTree property violated: exactly two parents per node (excluding root)")
+    if(!has_one_root(btree)) stop("btree property violated: exactly one root node")
+    if(!has_two_children(btree)) stop("btree property violated: exactly two children per node (excluding leaves)")
 
     return(btree)
   }
@@ -95,8 +93,8 @@ make_btree <- function(nodeIDs, parentNodeIDs=NULL, leftChildIDs=NULL, rightChil
     btree[parentsNodes, ParentNodeID := i.ParentNodeID, on=c("NodeID" = "RightChildID")]
 
     # Check btree properties
-    if(!has_one_root(btree)) stop("BTree property violated: exactly one root node")
-    if(!has_two_parents(btree)) stop("BTree property violated: exactly two parents per node (excluding root)")
+    if(!has_one_root(btree)) stop("btree property violated: exactly one root node")
+    if(!has_two_children(btree)) stop("btree property violated: exactly two children per node (excluding leaves)")
 
     return(btree)
   }

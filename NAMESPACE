@@ -2,7 +2,7 @@
 
 export(btree_paths)
 export(has_one_root)
-export(has_two_parents)
+export(has_two_children)
 export(make_btree)
 export(make_perfect_btree)
 export(plot_btree)

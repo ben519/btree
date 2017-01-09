@@ -32,7 +32,6 @@ library(data.table)
 
 # constructor 1
 make_btree(nodeIDs=c(1), parentNodeIDs=c(NA_integer_))
-make_btree(nodeIDs=c(1,2), parentNodeIDs=c(NA,1))
 make_btree(nodeIDs=c(1,2,3), parentNodeIDs=c(NA,1,1))
 make_btree(nodeIDs=c(1,2,3,4,5,6,7), parentNodeIDs=c(NA,1,1,2,2,3,3))
 
@@ -40,6 +39,5 @@ make_btree(nodeIDs=c(1,2,3,4,5,6,7), parentNodeIDs=c(NA,1,1,2,2,3,3))
 make_btree(nodeIDs=c(1), leftChildIDs=c(NA_integer_), rightChildIDs=c(NA_integer_))
 make_btree(nodeIDs=c(1), leftChildIDs=c(2), rightChildIDs=c(3))
 make_btree(nodeIDs=c(1,2,3), leftChildIDs=c(2,NA,NA), rightChildIDs=c(3,NA,NA))
-make_btree(nodeIDs=c(1,1), leftChildIDs=c(2,3), rightChildIDs=c(3,2))
 }
 

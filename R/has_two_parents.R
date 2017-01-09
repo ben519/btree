@@ -1,11 +1,11 @@
 #' @title
-#' Has Two Parents
+#' Has Two Children
 #'
 #' @description
-#' Helper method for validating a data.table object as a btree by checking for two parents per node, excluding the root node.
+#' Helper method for validating a data.table object as a btree by checking for two children per node, excluding leaves.
 #'
 #' @details
-#' Returns \code{TRUE} if every unique \code{ParentNodeID} besides NA (the root) has exactly 2 matching values in field
+#' Returns \code{TRUE} or \code{FALSE}
 #' \code{NodeID}
 #'
 #' @param btree A data.table object with fields \code{NodeID} and \code{ParentNodeID}
@@ -16,11 +16,11 @@
 #' @examples
 #' library(data.table)
 #' mytree <- data.table(NodeID=c(1, 2, 3), ParentNodeID=c(NA, 1, 1))
-#' has_two_parents(mytree)
+#' has_two_children(mytree)
 
-has_two_parents <- function(btree){
+has_two_children <- function(btree){
   # Make sure every node besides the root has exactly two parents
 
-  dt <- btree[btree[!is.na(ParentNodeID)], on=c("NodeID" = "ParentNodeID")][, list(Parents=.N), keyby=NodeID]
-  if(nrow(dt) == 0) return(TRUE) else return(all(dt$Parents == 2))
+  dt <- btree[btree[!is.na(ParentNodeID)], on=c("NodeID" = "ParentNodeID")][, list(Children=.N), keyby=NodeID]
+  if(nrow(dt) == 0) return(TRUE) else return(all(dt$Children == 2))
 }
