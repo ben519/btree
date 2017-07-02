@@ -7,17 +7,16 @@
 has_one_root(btree)
 }
 \arguments{
-\item{btree}{A data.table object with field \code{ParentNodeID}}
+\item{btree}{A data.table object with field \code{ParentNodeId}}
 }
 \description{
 Helper method for validating a data.table object as a btree by checking for one root.
 }
 \details{
-Returns \code{TRUE} if field \code{ParentNodeID} has exactly 1 NA value.
+Returns \code{TRUE} if field \code{ParentNodeId} has exactly 1 NA value.
 }
 \examples{
 library(data.table)
-mytree <- data.table(NodeID=c(1, 2, 3), ParentNodeID=c(NA, 1, 1))
+mytree <- data.table(NodeId=c(1, 2, 3), ParentNodeId=c(NA, 1, 1))
 has_one_root(mytree)
 }
-

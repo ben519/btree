@@ -17,7 +17,6 @@ Returns a character vector whose values correspond to each node in the btree
 }
 \examples{
 library(data.table)
-mytree <- data.table(NodeID=c(1, 2, 3), ParentNodeID=c(NA, 1, 1))
+mytree <- data.table(NodeId=c(1, 2, 3), ParentNodeId=c(NA, 1, 1))
 btree_paths(mytree)
 }
-

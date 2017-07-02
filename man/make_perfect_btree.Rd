@@ -4,16 +4,16 @@
 \alias{make_perfect_btree}
 \title{Make Perfect btree}
 \usage{
-make_perfect_btree(height)
+make_perfect_btree(depth)
 }
 \arguments{
-\item{height}{Height of the btree}
+\item{depth}{Depth of the btree}
 }
 \description{
 Generate a perfect btree
 }
 \details{
-Returns a btree, data.table object
+Returns a btree object that is a perfect binary tree
 }
 \examples{
 library(data.table)
@@ -22,4 +22,3 @@ make_perfect_btree(2)
 \references{
 \url{https://en.wikipedia.org/wiki/Binary_tree#Types_of_binary_trees}
 }
-

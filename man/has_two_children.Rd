@@ -7,18 +7,17 @@
 has_two_children(btree)
 }
 \arguments{
-\item{btree}{A data.table object with fields \code{NodeID} and \code{ParentNodeID}}
+\item{btree}{A data.table object with fields \code{NodeId} and \code{ParentNodeId}}
 }
 \description{
 Helper method for validating a data.table object as a btree by checking for two children per node, excluding leaves.
 }
 \details{
 Returns \code{TRUE} or \code{FALSE}
-\code{NodeID}
+\code{NodeId}
 }
 \examples{
 library(data.table)
-mytree <- data.table(NodeID=c(1, 2, 3), ParentNodeID=c(NA, 1, 1))
+mytree <- data.table(NodeId=c(1, 2, 3), ParentNodeId=c(NA, 1, 1))
 has_two_children(mytree)
 }
-

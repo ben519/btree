@@ -20,8 +20,16 @@
 #' mytree <- make_perfect_btree(2)
 #' plot_btree(mytree)
 
-plot_btree <- function(btree, labelCol="NodeID"){
+plot_btree <- function(btree, labelCol="NodeId"){
   # Plot a btree
+
+  #--------------------------------------------------
+  # Check input
+
+  if(!inherits(btree, "btree"))
+    stop("btree must be a btree object")
+
+  #--------------------------------------------------
 
   # Algorithm:
   # Determine height of btree
@@ -30,7 +38,7 @@ plot_btree <- function(btree, labelCol="NodeID"){
   # Map (x, y) coords to corresponding nodes of btree
 
   # Copy the given btree and add a Path column
-  btree.nodes <- btree[, list(NodeID, ParentNodeID, LeftChildNodeID, RightChildNodeID)]
+  btree.nodes <- btree[, list(NodeId, ParentNodeId, LeftChildNodeId, RightChildNodeId)]
   btree.nodes[, Label := btree[[labelCol]]]
 
   # Calculate btree height
@@ -53,8 +61,8 @@ plot_btree <- function(btree, labelCol="NodeID"){
   btree.perfect[Depth==btree.height, X := seq(0, 1, length.out=.N)]  # bottom level
   for(depth in rev(seq(0, btree.height - 1))){
     children <- btree.perfect[Depth == depth + 1]
-    children.middles <- children[, list(X.middle = mean(X)), keyby=ParentNodeID]
-    btree.perfect[children.middles, X := X.middle, on=c("NodeID"="ParentNodeID")]
+    children.middles <- children[, list(X.middle = mean(X)), keyby=ParentNodeId]
+    btree.perfect[children.middles, X := X.middle, on=c("NodeId"="ParentNodeId")]
   }
 
   # Insert Y coordinates
@@ -64,8 +72,8 @@ plot_btree <- function(btree, labelCol="NodeID"){
   btree.nodes[btree.perfect, `:=`(X=X, Y=Y), on="Path"]
 
   # Get the edges
-  btree.edges <- btree.nodes[btree.nodes, on=c("NodeID"="ParentNodeID"), nomatch=0]
-  btree.edges <- btree.edges[, list(NodeID1=NodeID, NodeID2=i.NodeID, X1=X, Y1=Y, X2=i.X, Y2=i.Y)]
+  btree.edges <- btree.nodes[btree.nodes, on=c("NodeId"="ParentNodeId"), nomatch=0]
+  btree.edges <- btree.edges[, list(NodeId1=NodeId, NodeId2=i.NodeId, X1=X, Y1=Y, X2=i.X, Y2=i.Y)]
 
   # Get the (x, y) coord of each node in the perfect btree
   ggplot()+
@@ -73,7 +81,3 @@ plot_btree <- function(btree, labelCol="NodeID"){
     geom_segment(data=btree.edges, aes(x=X1, y=Y1, xend=X2, yend=Y2), linetype="dotted", alpha=.25)+
     theme_void()
 }
-
-# plot_btree(make_perfect_btree(height=0), "NodeID")
-# plot_btree(make_perfect_btree(height=6), "NodeID")
-# plot_btree(sub_btree(make_perfect_btree(height=6), 4), "NodeID")

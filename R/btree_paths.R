@@ -14,26 +14,34 @@
 #'
 #' @examples
 #' library(data.table)
-#' mytree <- data.table(NodeID=c(1, 2, 3), ParentNodeID=c(NA, 1, 1))
+#' mytree <- data.table(NodeId=c(1, 2, 3), ParentNodeId=c(NA, 1, 1))
 #' btree_paths(mytree)
 
 btree_paths <- function(btree){
-  # Returns a vector of paths, "0" representing traversal to the left and "1" representing traversal to the right
+  # Returns a vector of paths, "L" representing traversal to the left and "R" representing traversal to the right
+
+  #--------------------------------------------------
+  # Check input
+
+  if(!inherits(btree, "btree"))
+    stop("btree must be a btree object")
+
+  #--------------------------------------------------
 
   # Get the root node
-  parents <- btree[is.na(ParentNodeID)]
+  parents <- btree[is.na(ParentNodeId)]
   parents[, Path := ""]
 
   parentsList <- list(parents)
   while(nrow(parents) > 0){
 
     # Get the children
-    leftChildren <- btree[parents[, list(Path, LeftChildNodeID)], on=c("NodeID"="LeftChildNodeID"), nomatch=0]
-    rightChildren <- btree[parents[, list(Path, RightChildNodeID)], on=c("NodeID"="RightChildNodeID"), nomatch=0]
+    leftChildren <- btree[parents[, list(Path, LeftChildNodeId)], on=c("NodeId"="LeftChildNodeId"), nomatch=0]
+    rightChildren <- btree[parents[, list(Path, RightChildNodeId)], on=c("NodeId"="RightChildNodeId"), nomatch=0]
 
     # Mark the paths
-    leftChildren[, Path := paste0(Path, "l")]
-    rightChildren[, Path := paste0(Path, "r")]
+    leftChildren[, Path := paste0(Path, "L")]
+    rightChildren[, Path := paste0(Path, "R")]
 
     # make the new parents
     parents <- rbind(leftChildren, rightChildren, use.names=TRUE)
@@ -46,7 +54,7 @@ btree_paths <- function(btree){
   newbtree <- rbindlist(parentsList)
 
   # Sort the rows of newbtree to match the given btree
-  newbtree <- newbtree[btree[, list(NodeID)], on="NodeID"]
+  newbtree <- newbtree[btree[, list(NodeId)], on="NodeId"]
 
   return(newbtree$Path)
 }

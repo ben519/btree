@@ -4,7 +4,7 @@
 \alias{plot_btree}
 \title{Plot btree}
 \usage{
-plot_btree(btree, labelCol = "NodeID")
+plot_btree(btree, labelCol = "NodeId")
 }
 \arguments{
 \item{btree}{btree to plot}
@@ -23,4 +23,3 @@ library(ggplot2)
 mytree <- make_perfect_btree(2)
 plot_btree(mytree)
 }
-

@@ -4,22 +4,24 @@
 \alias{sub_btree}
 \title{Sub btree}
 \usage{
-sub_btree(btree, nodeID)
+sub_btree(btree, nodeId = NULL, depth = NULL)
 }
 \arguments{
 \item{btree}{A data.table object that is a btree}
 
-\item{nodeID}{ID of the node which should be the root node in the sub-btree}
+\item{nodeId}{Id of the node which should be the root node in the sub-btree}
+
+\item{depth}{subset btree by nodes <= this depth}
 }
 \description{
-Extract a sub-btree from an existing btree
+Extract a sub-btree from either an existing btree, or to a specified depth
 }
 \details{
 Returns a btree, data.table
 }
 \examples{
 library(data.table)
-mytree <- make_btree(nodeIDs=c(1,2,3,4,5,6,7), parentNodeIDs=c(NA,1,1,2,2,3,3))
-sub_btree(mytree, nodeID=3)
+mytree <- make_btree(nodeIds=c(1,2,3,4,5,6,7), parentNodeIds=c(NA,1,1,2,2,3,3))
+sub_btree(mytree, nodeId=3)
+sub_btree(mytree, depth=1)
 }
-
