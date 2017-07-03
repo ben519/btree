@@ -19,6 +19,9 @@ Returns a dtree object
 }
 \examples{
 library(data.table)
-mytree <- data.table(NodeId=c(1, 2, 3), ParentNodeId=c(NA, 1, 1))
-btree_paths(mytree)
+library(randomForest)
+library(ggplot2)
+rf <- randomForest(mpg ~ cyl + disp + hp, data = mtcars)
+dtree <- dtree_from_randomForest(rf, 1L)
+plot_btree(dtree, labelCol = "Split")
 }

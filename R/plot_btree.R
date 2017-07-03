@@ -32,8 +32,8 @@ plot_btree <- function(btree, labelCol="NodeId"){
   #--------------------------------------------------
 
   # Algorithm:
-  # Determine height of btree
-  # Build a perfect btree with the same height
+  # Determine depth of btree
+  # Build a perfect btree with the same depth
   # Determine (x, y) coords of each node in perfect btree, fit inside a 1x1 bounding box
   # Map (x, y) coords to corresponding nodes of btree
 
@@ -41,32 +41,32 @@ plot_btree <- function(btree, labelCol="NodeId"){
   btree.nodes <- btree[, list(NodeId, ParentNodeId, LeftChildNodeId, RightChildNodeId)]
   btree.nodes[, Label := btree[[labelCol]]]
 
-  # Calculate btree height
+  # Calculate btree depth
   btree.nodes[, Path := btree_paths(btree.nodes)]
   btree.nodes[, Depth := nchar(Path)]
-  btree.height <- max(btree.nodes$Depth)
+  btree.depth <- max(btree.nodes$Depth)
 
-  # If height is 0, plot a single node at (.5, .5)
-  if(btree.height == 0){
+  # If depth is 0, plot a single node at (.5, .5)
+  if(btree.depth == 0){
     ggplot(btree.nodes, aes(x=.5, y=.5, label=Label))+geom_text()+theme_void()
   }
 
-  # Make a perfect btree with the same height
-  btree.perfect <- make_perfect_btree(btree.height)
+  # Make a perfect btree with the same depth
+  btree.perfect <- make_perfect_btree(btree.depth)
   btree.perfect[, Path := btree_paths(btree.perfect)]
   btree.perfect[, Depth := nchar(Path)]
   setkey(btree.perfect, "Path")
 
   # Insert X coordinates
-  btree.perfect[Depth==btree.height, X := seq(0, 1, length.out=.N)]  # bottom level
-  for(depth in rev(seq(0, btree.height - 1))){
+  btree.perfect[Depth==btree.depth, X := seq(0, 1, length.out=.N)]  # bottom level
+  for(depth in rev(seq(0, btree.depth - 1))){
     children <- btree.perfect[Depth == depth + 1]
     children.middles <- children[, list(X.middle = mean(X)), keyby=ParentNodeId]
     btree.perfect[children.middles, X := X.middle, on=c("NodeId"="ParentNodeId")]
   }
 
   # Insert Y coordinates
-  btree.perfect[, Y := seq(1, 0, length.out=btree.height + 1)[Depth + 1]]
+  btree.perfect[, Y := seq(1, 0, length.out=btree.depth + 1)[Depth + 1]]
 
   # Join btree.perfect to btree.nodes to get the (x, y) coords
   btree.nodes[btree.perfect, `:=`(X=X, Y=Y), on="Path"]

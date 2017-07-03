@@ -43,5 +43,11 @@ make_dtree <- function(nodeIds, leftChildIds, rightChildIds, splitVars=NULL, spl
   tmp <- data.table(NodeId = nodeIds, SplitVar = splitVars, SplitVal = splitVals)
   dtree[tmp, `:=`(SplitVar = i.SplitVar, SplitVal = i.SplitVal), on=c("NodeId")]
 
+  # Insert Split
+  dtree[!is.na(SplitVar), Split := paste0(SplitVar, " <= ", SplitVal)]
+
+  # Insert Node Conditions
+  dtree[dtree_node_conditions(dtree), NodeCondition := i.Condition, on="NodeId"]
+
   return(dtree[])
 }

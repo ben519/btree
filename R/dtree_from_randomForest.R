@@ -15,8 +15,11 @@
 #'
 #' @examples
 #' library(data.table)
-#' mytree <- data.table(NodeId=c(1, 2, 3), ParentNodeId=c(NA, 1, 1))
-#' btree_paths(mytree)
+#' library(randomForest)
+#' library(ggplot2)
+#' rf <- randomForest(mpg ~ cyl + disp + hp, data = mtcars)
+#' dtree <- dtree_from_randomForest(rf, 1L)
+#' plot_btree(dtree, labelCol = "Split")
 
 dtree_from_randomForest <- function(rf, kthTree){
   # Returns a vector of paths, "L" representing traversal to the left and "R" representing traversal to the right
@@ -28,6 +31,20 @@ dtree_from_randomForest <- function(rf, kthTree){
     stop("rf must be a randomForest object")
 
   #--------------------------------------------------
+
+  # Get the kth tree and prep for conversion to dtree
+  rftree <- data.table(getTree(rfobj = rf, k = kthTree, labelVar = TRUE))
+  rftree[, NodeId := .I]
+  rftree[`left daughter` == 0, `:=`(`left daughter` = NA, `right daughter` = NA)]
+
+  # Convert to dtree
+  dtree <- make_dtree(
+    nodeIds = rftree$NodeId,
+    leftChildIds = rftree$`left daughter`,
+    rightChildIds = rftree$`right daughter`,
+    splitVars = rftree$`split var`,
+    splitVals = rftree$`split point`
+  )
 
   return(dtree)
 }

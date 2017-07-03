@@ -22,7 +22,7 @@
 make_perfect_btree <- function(depth){
   # Make a perfect btree with the specified depth
 
-  perfectbtree.Nnodes <- sum(2 ^ seq(0, height))
+  perfectbtree.Nnodes <- sum(2 ^ seq(0, depth))
   perfectbtree.nodeIds <- seq_len(perfectbtree.Nnodes)
   perfectbtree.parentNodeIds <- c(NA_integer_, head(rep(seq_len(perfectbtree.Nnodes), each=2), length(perfectbtree.nodeIds) -1))
   btree <- make_btree(nodeIds=perfectbtree.nodeIds, parentNodeIds=perfectbtree.parentNodeIds)
