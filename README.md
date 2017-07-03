@@ -84,5 +84,12 @@ sub_btree(mytree, nodeID=2)
 class(mytree)  # "data.table" "data.frame"
 ```
 
+## TODO
+- Implement code for handling factors in a dtree
+- Implement samples_at_node(dtree, nodeId)
+- Implement predict(dtree, data)
+- Possible speed improvement for dtree_node_conditions by retaining path to each node as NodeIds or indices instead of LRLR to prevent looping over each depth
+- Create btreeforest and dtreeforest classes?
+
 ## Contact
 If you'd like to contact me regarding bugs, questions, or general consulting, feel free to drop me a line - bgorman519@gmail.com
