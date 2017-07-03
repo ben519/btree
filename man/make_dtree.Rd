@@ -4,8 +4,8 @@
 \alias{make_dtree}
 \title{Make dtree}
 \usage{
-make_dtree(nodeIds, leftChildIds, rightChildIds, splitVars, splitVals,
-  catVars = NULL)
+make_dtree(nodeIds, leftChildIds, rightChildIds, splitVars = NULL,
+  splitVals = NULL, catVars = NULL)
 }
 \arguments{
 \item{nodeIds}{A vector of node Ids}
@@ -30,13 +30,7 @@ Returns a dtree object
 \examples{
 library(data.table)
 
-# constructor 1
-make_btree(nodeIds=c(1), parentNodeIds=c(NA_integer_))
-make_btree(nodeIds=c(1,2,3), parentNodeIds=c(NA,1,1))
-make_btree(nodeIds=c(1,2,3,4,5,6,7), parentNodeIds=c(NA,1,1,2,2,3,3))
-
-# constructor 2
-make_btree(nodeIds=c(1), leftChildIds=c(NA_integer_), rightChildIds=c(NA_integer_))
-make_btree(nodeIds=c(1), leftChildIds=c(2), rightChildIds=c(3))
-make_btree(nodeIds=c(1,2,3), leftChildIds=c(2,NA,NA), rightChildIds=c(3,NA,NA))
+make_dtree(nodeIds=c(1), leftChildIds=c(NA_integer_), rightChildIds=c(NA_integer_))
+make_dtree(nodeIds=c(1), leftChildIds=c(2), rightChildIds=c(3), splitVars=c("foo"), splitVals=c(3.5))
+make_dtree(nodeIds=c(1,2,3), leftChildIds=c(2,NA,NA), rightChildIds=c(3,NA,NA), splitVars=c("foo",NA,NA), splitVals=c(3.5,NA,NA))
 }
