@@ -20,6 +20,6 @@ Returns a ggplot plot of a btree
 \examples{
 library(data.table)
 library(ggplot2)
-mytree <- make_perfect_btree(2)
+mytree <- make_perfect_btree(4)
 plot_btree(mytree)
 }

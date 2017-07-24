@@ -17,7 +17,7 @@
 #' @examples
 #' library(data.table)
 #' library(ggplot2)
-#' mytree <- make_perfect_btree(2)
+#' mytree <- make_perfect_btree(4)
 #' plot_btree(mytree)
 
 plot_btree <- function(btree, labelCol="NodeId"){
@@ -66,7 +66,8 @@ plot_btree <- function(btree, labelCol="NodeId"){
   }
 
   # Insert Y coordinates
-  btree.perfect[, Y := seq(1, 0, length.out=btree.depth + 1)[Depth + 1]]
+  btree.perfect[, Y := 1 - Depth/btree.depth]
+  btree.perfect[Y < 1, Y := Y + (1/btree.depth)* 0.8 * (seq_len(.N) %% 3)/2, by=Depth]
 
   # Join btree.perfect to btree.nodes to get the (x, y) coords
   btree.nodes[btree.perfect, `:=`(X=X, Y=Y), on="Path"]
