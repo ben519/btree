@@ -18,9 +18,7 @@ Installation
 #### Github (development version)
 ```r
 install.packages("devtools")
-
-library(devtools)
-install_github("ben519/btree")
+devtools::install_github("ben519/btree")
 ```
 ---
 
