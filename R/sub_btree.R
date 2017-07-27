@@ -26,7 +26,7 @@ sub_btree <- function(btree, nodeId=NULL, depth=NULL){
   #--------------------------------------------------
   # Check input
 
-  if(!inherits(btree))
+  if(!inherits(btree, "btree"))
     stop("btree must be a btree object")
 
   #--------------------------------------------------
@@ -48,6 +48,9 @@ sub_btree <- function(btree, nodeId=NULL, depth=NULL){
 
   subtree <- rbindlist(childNodesList)
   subtree[NodeId == nodeId, ParentNodeId := NA]
+
+  # Prepend class with "btree"
+  class(subtree) <- class(btree)
 
   return(subtree[])
 }
