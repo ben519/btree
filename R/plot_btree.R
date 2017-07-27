@@ -31,54 +31,67 @@ plot_btree <- function(btree, labelCol="NodeId"){
 
   #--------------------------------------------------
 
-  # Algorithm:
-  # Determine depth of btree
-  # Build a perfect btree with the same depth
-  # Determine (x, y) coords of each node in perfect btree, fit inside a 1x1 bounding box
-  # Map (x, y) coords to corresponding nodes of btree
+  # Copy the given btree and add columns for Depth, NodePath
+  btreeCopy <- btree[, list(NodeId, ParentNodeId, LeftChildNodeId, RightChildNodeId)]
+  btreeCopy[, Label := btree[[labelCol]]]
+  btreeCopy[, NodePath := btree_paths(btreeCopy)]
+  btreeCopy[, Depth := nchar(NodePath)]
 
-  # Copy the given btree and add a Path column
-  btree.nodes <- btree[, list(NodeId, ParentNodeId, LeftChildNodeId, RightChildNodeId)]
-  btree.nodes[, Label := btree[[labelCol]]]
+  # Order the rows properly
+  setorder(btreeCopy, "Depth", "NodePath")
 
-  # Calculate btree depth
-  btree.nodes[, Path := btree_paths(btree.nodes)]
-  btree.nodes[, Depth := nchar(Path)]
-  btree.depth <- max(btree.nodes$Depth)
+  # Determine the width of each subtree @ each node
+  subtree_width <- function(btree, nodeId){
+    subtree <- sub_btree(btree, nodeId)
+    width <- pmax(1, max(nchar(btree_paths(subtree))))
+    return(width)
+  }
+  btreeCopy[, SubTreeWidth := subtree_width(btreeCopy, NodeId), by=NodeId]
+
+  # Get the max depth
+  btree.depth <- max(btreeCopy$Depth)
 
   # If depth is 0, plot a single node at (.5, .5)
-  if(btree.depth == 0){
-    ggplot(btree.nodes, aes(x=.5, y=.5, label=Label))+geom_text()+theme_void()
-  }
-
-  # Make a perfect btree with the same depth
-  btree.perfect <- make_perfect_btree(btree.depth)
-  btree.perfect[, Path := btree_paths(btree.perfect)]
-  btree.perfect[, Depth := nchar(Path)]
-  setkey(btree.perfect, "Path")
+  if(btree.depth == 0) ggplot(btreeCopy, aes(x=.5, y=.5, label=Label))+geom_text()+theme_void()
 
   # Insert X coordinates
-  btree.perfect[Depth==btree.depth, X := seq(0, 1, length.out=.N)]  # bottom level
-  for(depth in rev(seq(0, btree.depth - 1))){
-    children <- btree.perfect[Depth == depth + 1]
-    children.middles <- children[, list(X.middle = mean(X)), keyby=ParentNodeId]
-    btree.perfect[children.middles, X := X.middle, on=c("NodeId"="ParentNodeId")]
+  btreeCopy[Depth == 0, `:=`(Xmin = 0, Xmax = 1, X = 0.5)]
+  for(depth in seq(1, btree.depth)){
+
+    # widths: 1, 6  -> 1/7
+    # X: 0.5, 1+3
+
+    # Get the nodes at the current depth
+    current_level_nodes <- btreeCopy[Depth == depth]
+
+    # For each node, get its parent's Xmin, Xmax
+    parent_level_nodes <- btreeCopy[Depth == depth - 1]
+    current_level_nodes[parent_level_nodes, `:=`(ParentXmin = i.Xmin, ParentXmax = i.Xmax), on=c("ParentNodeId"="NodeId")]
+
+    # Determine Xmin, X, Xmax
+    current_level_nodes[, BlockWidth := (ParentXmax - ParentXmin)/sum(SubTreeWidth), by=ParentNodeId]
+    current_level_nodes[, BlocksOver := cumsum(SubTreeWidth) - SubTreeWidth + SubTreeWidth/2, by=ParentNodeId]
+    current_level_nodes[, X := ParentXmin + BlockWidth * BlocksOver]
+    current_level_nodes[, `:=`(
+      Xmin = ParentXmin + (cumsum(SubTreeWidth) - SubTreeWidth) * BlockWidth,
+      Xmax = ParentXmin + cumsum(SubTreeWidth) * BlockWidth
+    ), by=ParentNodeId]
+
+    # Insert values into btreeCopy
+    btreeCopy[current_level_nodes, `:=`(Xmin = i.Xmin, Xmax = i.Xmax, X = i.X), on="NodeId"]
   }
 
   # Insert Y coordinates
-  btree.perfect[, Y := 1 - Depth/btree.depth]
-  btree.perfect[Y < 1, Y := Y + (1/btree.depth)* 0.8 * (seq_len(.N) %% 3)/2, by=Depth]
-
-  # Join btree.perfect to btree.nodes to get the (x, y) coords
-  btree.nodes[btree.perfect, `:=`(X=X, Y=Y), on="Path"]
+  btreeCopy[, Y := 1 - Depth/btree.depth]
+  btreeCopy[Y < 1, Y := Y + (1/btree.depth)* 0.5 * (seq_len(.N) %% 3)/2, by=Depth]
 
   # Get the edges
-  btree.edges <- btree.nodes[btree.nodes, on=c("NodeId"="ParentNodeId"), nomatch=0]
+  btree.edges <- btreeCopy[btreeCopy, on=c("NodeId"="ParentNodeId"), nomatch=0]
   btree.edges <- btree.edges[, list(NodeId1=NodeId, NodeId2=i.NodeId, X1=X, Y1=Y, X2=i.X, Y2=i.Y)]
 
   # Get the (x, y) coord of each node in the perfect btree
   ggplot()+
-    geom_text(data=btree.nodes, aes(x=X, y=Y, label=Label), size=3)+
+    geom_text(data=btreeCopy, aes(x=X, y=Y, label=Label), size=3)+
     geom_segment(data=btree.edges, aes(x=X1, y=Y1, xend=X2, yend=Y2), linetype="dotted", alpha=.25)+
-    theme_void()
+    xlim(0, 1)+ylim(0, 1)+theme_void()
 }
