@@ -125,8 +125,8 @@ dtree <- dtree_from_randomForest(rf, kthTree=1L, data=train)
 dtree[, c("NodeId", "ParentNodeId", "LeftChildNodeId", "RightChildNodeId", "Split")]
     NodeId ParentNodeId LeftChildNodeId RightChildNodeId                                     Split
  1:      1           NA               2                3                       IsVirginica == TRUE
- 2:      2            1               4                5                           Size <= "medium
- 3:      3            1               6                7                           Size <= "medium
+ 2:      2            1               4                5                          Size <= "medium"
+ 3:      3            1               6                7                          Size <= "medium"
  4:      4            2               8                9 Species %in% c("versicolor", "virginica")
  5:      5            2              NA               NA                                        NA
  6:      6            3              NA               NA                                        NA

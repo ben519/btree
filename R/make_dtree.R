@@ -166,7 +166,7 @@ make_dtree <- function(nodeIds, leftChildIds, rightChildIds, splitVars=NULL, spl
   #--------------------------------------------------
   # Fix Split labels for factors
 
-  dtree[SplitVar %in% cols.ordered, Split := paste0(SplitVar, ' <= "', levels(data[[SplitVar]])[floor(SplitVal)]), by=NodeId]
+  dtree[SplitVar %in% cols.ordered, Split := paste0(SplitVar, ' <= "', levels(data[[SplitVar]])[floor(SplitVal)], '"'), by=NodeId]
   dtree[SplitVar %in% cols.unordered, Split := paste0(
     SplitVar, ' %in% c(', paste0(
       '"', levels(data[[SplitVar]])[head(as.integer(intToBits(SplitVal)), length(levels(data[[SplitVar]]))) == 1], '"', collapse = ', '
