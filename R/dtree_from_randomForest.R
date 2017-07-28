@@ -47,5 +47,8 @@ dtree_from_randomForest <- function(rf, kthTree, data=NULL){
     data = data
   )
 
-  return(dtree)
+  # Insert prediction column
+  dtree[rftree, Prediction := i.prediction, on=c("NodeId")]
+
+  return(dtree[])
 }

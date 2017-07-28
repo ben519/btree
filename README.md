@@ -142,7 +142,7 @@ dtree[, c("NodeId", "ParentNodeId", "LeftChildNodeId", "RightChildNodeId", "Spli
 
 
 # make a pretty label column and plot it
-dtree[, Label := ifelse(is.na(LeftChildNodeId), paste("LEAF", NodeId), Split)]
+dtree[, Label := ifelse(is.na(LeftChildNodeId), paste0("LEAF ", NodeId, ", PREDICT ",  round(Prediction, 3)), Split)]
 plot_btree(dtree, labelCol = "Label")
 ```
 ![dtree](images/dtree1.png)
