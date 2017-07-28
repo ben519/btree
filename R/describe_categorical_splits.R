@@ -18,8 +18,6 @@ describe_categorical_splits <- function(rules, catVars){
   # "color = 5" -> "color %in% c('blue', 'green')"
   # catVars should be a data.frame containing the categorical data
 
-  print(rules)
-
   rulesDT <- data.table(Rule = rules)
 
   catVars <- catVars[1,]
