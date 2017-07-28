@@ -97,7 +97,7 @@ make_dtree <- function(nodeIds, leftChildIds, rightChildIds, splitVars=NULL, spl
       x <- as.integer(intToBits(UFVal))
       x[1:length(levels(catVars[[SplitVar]]))] <- 1L - x[1:length(levels(catVars[[SplitVar]]))]
       as.double(packBits(x, type="integer"))
-      }, by=NodeId]
+    }, by=NodeId]
     conditions.level[!SplitVar %in% catVars.unordered, UFVal := NA]
 
     # Get the conditions inherited by each node's parent {NodeId, SplitVar, LB, RB}
@@ -138,14 +138,14 @@ make_dtree <- function(nodeIds, leftChildIds, rightChildIds, splitVars=NULL, spl
   conditions[VarType == "numeric" & is.na(Condition), Condition := paste0("between(", SplitVar, ", ", LB, ", ", RB, ")")]
 
   # Fix conditions for ordered factors
-  conditions[VarType == "OF" & LB == -Inf, Condition := paste0(SplitVar, " <= ", levels(catVars[[SplitVar]])[floor(RB)])]
-  conditions[VarType == "OF" & RB == Inf, Condition := paste0(SplitVar, " > ", levels(catVars[[SplitVar]])[ceiling(LB)])]
+  conditions[VarType == "OF" & LB == -Inf, Condition := paste0(SplitVar, ' <= "', levels(catVars[[SplitVar]])[floor(RB)], '"'), by=list(NodeId, SplitVar)]
+  conditions[VarType == "OF" & RB == Inf, Condition := paste0(SplitVar, ' > "', levels(catVars[[SplitVar]])[ceiling(LB)], '"'), by=list(NodeId, SplitVar)]
   conditions[VarType == "OF" & is.na(Condition) & LB != RB, Condition := paste0(
-    "between(", SplitVar, ", ", levels(catVars[[SplitVar]])[floor(RB)], ", ", levels(catVars[[SplitVar]])[ceiling(LB)], ")"
-  )]
+    'between(', SplitVar, ', "', levels(catVars[[SplitVar]])[floor(RB)], '", "', levels(catVars[[SplitVar]])[ceiling(LB)], '")'
+  ), by=list(NodeId, SplitVar)]
   conditions[VarType == "OF" & is.na(Condition) & LB == RB, Condition := paste0(
-    SplitVar, " == ", levels(catVars[[SplitVar]])[ceiling(LB)]
-  )]
+    SplitVar, ' == "', levels(catVars[[SplitVar]])[ceiling(LB)], '"'
+  ), by=list(NodeId, SplitVar)]
 
   # Fix conditions for unordered factors
   conditions[VarType == "UF", Condition := paste0(
@@ -157,6 +157,15 @@ make_dtree <- function(nodeIds, leftChildIds, rightChildIds, splitVars=NULL, spl
   # Insert node conditions
   nodeconditions <- conditions[, list(Condition = paste(Condition, collapse = " & ")), keyby=NodeId]
   dtree[nodeconditions, NodeCondition := i.Condition, on="NodeId"]
+
+  #--------------------------------------------------
+  # Fix Split labels for factors
+
+  dtree[SplitVar %in% catVars.ordered, Split := paste0(SplitVar, ' <= "', levels(catVars[[SplitVar]])[floor(SplitVal)]), by=NodeId]
+  dtree[SplitVar %in% catVars.unordered, Split := paste0(
+    SplitVar, ' %in% c(', paste0(
+      '"', levels(catVars[[SplitVar]])[head(as.integer(intToBits(SplitVal)), length(levels(catVars[[SplitVar]]))) == 1], '"', collapse = ', '
+    ), ')'), by=NodeId]
 
   return(dtree[])
 }
