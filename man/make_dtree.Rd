@@ -5,7 +5,7 @@
 \title{Make dtree}
 \usage{
 make_dtree(nodeIds, leftChildIds, rightChildIds, splitVars = NULL,
-  splitVals = NULL, catVars = NULL)
+  splitVals = NULL, data = NULL)
 }
 \arguments{
 \item{nodeIds}{A vector of node Ids}

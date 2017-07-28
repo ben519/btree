@@ -10,6 +10,7 @@
 predict.dtree = function(dtree, data){
   # Predict which NodeId each row of data will map to
 
+  data <- as.data.table(data)
   leaves <- dtree[is.na(LeftChildNodeId)]
   result <- rep(NA_integer_, nrow(data))
   for(leaf in seq_len(nrow(leaves))){

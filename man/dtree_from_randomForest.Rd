@@ -4,7 +4,7 @@
 \alias{dtree_from_randomForest}
 \title{Extract a dtree from a randomForest object}
 \usage{
-dtree_from_randomForest(rf, kthTree, catVars = NULL)
+dtree_from_randomForest(rf, kthTree, data = NULL)
 }
 \arguments{
 \item{rf}{A randomForest object}

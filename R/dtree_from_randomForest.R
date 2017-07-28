@@ -21,7 +21,7 @@
 #' dtree <- dtree_from_randomForest(rf, 1L)
 #' plot_btree(dtree, labelCol = "Split")
 
-dtree_from_randomForest <- function(rf, kthTree, catVars=NULL){
+dtree_from_randomForest <- function(rf, kthTree, data=NULL){
   # Returns a vector of paths, "L" representing traversal to the left and "R" representing traversal to the right
 
   #--------------------------------------------------
@@ -44,7 +44,7 @@ dtree_from_randomForest <- function(rf, kthTree, catVars=NULL){
     rightChildIds = rftree$`right daughter`,
     splitVars = rftree$`split var`,
     splitVals = rftree$`split point`,
-    catVars = catVars
+    data = data
   )
 
   return(dtree)
